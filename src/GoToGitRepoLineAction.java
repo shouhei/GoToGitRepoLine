@@ -1,3 +1,5 @@
+import WebGitRepository.WebGitRepository;
+import WebGitRepository.WebGitRepositoryFactory;
 import com.google.common.collect.Iterables;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -20,7 +22,6 @@ import git4idea.repo.GitRepositoryManager;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.util.Collection;
-
 
 
 public class GoToGitRepoLineAction extends AnAction {
@@ -49,15 +50,10 @@ public class GoToGitRepoLineAction extends AnAction {
         FileEditorManager manager = FileEditorManager.getInstance(project);
         VirtualFile files[] = manager.getSelectedFiles();
         String file_path = files[0].toString().replace(virtualFile.toString(), "");
-
-        String url = createUrl(base, revision, file_path, String.valueOf(logicalPosition.line + 1));
+        WebGitRepository repository = WebGitRepositoryFactory.create(base, revision, file_path,  String.valueOf(logicalPosition.line + 1));
         java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(new StringSelection(url), null);
-        showMessage("Send \"" + url + "\" to clipboard.");
-    }
-
-    private String createUrl(String base, String revision, String path, String line) {
-        return base.replace(".git", "") + "/blob/" + revision + path +"#L"+ line;
+        clipboard.setContents(new StringSelection(repository.url()), null);
+        showMessage("Send \"" + repository.url() + "\" to clipboard.");
     }
 
     private void showMessage(String message) {
