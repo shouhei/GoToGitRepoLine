@@ -57,7 +57,7 @@ public class GoToGitRepoLineAction extends AnAction {
     }
 
     private String createUrl(String base, String revision, String path, String line) {
-        return base + "/blob/" + revision + path +"#L"+ line;
+        return base.replace(".git", "") + "/blob/" + revision + path +"#L"+ line;
     }
 
     private void showMessage(String message) {
